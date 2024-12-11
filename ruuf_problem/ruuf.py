@@ -1,36 +1,28 @@
+def calculate_section_panels(total_length, section_length, panel_dimension1, panel_dimension2):
+    panels = (section_length // panel_dimension1) * (total_length // panel_dimension2)
+
+    return panels
+
 def max_panels(panelDim : tuple, roofDim : tuple) -> int:
-    panelWidth, panelHeight = panelDim
-    roofWidth ,roofHeight = roofDim
+    x, y = roofDim
+    a, b = panelDim
 
-    max_tiles = 0
-    width = max(panelWidth,panelHeight)
-    # Strategy 1: First part of the roof with a x b, second part with b x a
-    for width in range(roofWidth + 1):  # Try different widths for the first section
-        section_1 = (width // panelWidth) * (roofHeight // panelHeight)  # First section with a x b
-        section_2 = ((roofWidth - width) // panelHeight) * (roofHeight// panelWidth)  # Second section with b x a
-        max_tiles = max(max_tiles, section_1 + section_2)
+    max_panels = 0
 
-    return max_tiles
+    for i in range(x + 1):
+        panels_first_section = calculate_section_panels(y, i, a, b)
+        panels_second_section = calculate_section_panels(y, x - i, b, a)
+        max_panels = max(max_panels, panels_first_section + panels_second_section)
 
-def max_panels_no_iter(panelDim : tuple, roofDim : tuple) -> int:
-    panelWidth, panelHeight = panelDim
-    roofWidth ,roofHeight = roofDim
+    for j in range(y + 1):
+        panels_first_section = calculate_section_panels(x, j, a, b)
+        panels_second_section = calculate_section_panels(x, y - j, b, a)
+        max_panels = max(max_panels, panels_first_section + panels_second_section)
 
-    width = panelWidth
+    return max_panels
 
-    section_1 = (width // panelWidth) * (roofHeight // panelHeight)  # First section with a x b
-    section_2 = ((roofWidth - width) // panelHeight) * (roofHeight// panelWidth)  # Second section with b x a
-
-    max_tiles = section_1 + section_2
-
-    return max_tiles
 
 if __name__ == "__main__":
-    print(max_panels_no_iter((1,2),(2,4)))
-    print(max_panels_no_iter((1,2),(3,5)))
-    print(max_panels_no_iter((2,2),(1,10)))
-    print(max_panels_no_iter((2,2),(3,5)))
-    print(max_panels_no_iter((3,1),(3,5)))
-
-
-
+    print(max_panels((1,2),(2,4)))
+    print(max_panels((1,2),(3,5)))
+    print(max_panels((2,2),(1,10)))
